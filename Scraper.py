@@ -4,8 +4,7 @@ import requests
 import json
 import time
 from bs4 import BeautifulSoup
-from openpyxl import Workbook
-from openpyxl.styles import Font, Alignment
+
 
 with open("cookie.txt", "r") as f:
     COOKIE_STRING = f.read().strip()
@@ -65,7 +64,10 @@ def get_all_listings():
     new_count = 0
     skipped_count = 0
 
-    while True:
+    # max_pages = 1  #used for testing, comment out for full scrape
+    reached_end = False
+
+    while True: #change True to page < maxpages for testing
         url = f"https://www.pakwheels.com/users/saved-ads?page={page}"
         resp = session.get(url, timeout=15)
         
@@ -73,6 +75,7 @@ def get_all_listings():
 
         cards = soup.select("li.classified-listing")
         if not cards:
+            reached_end = True
             break
 
         print(f"Page {page}: found {len(cards)} listings")
@@ -99,14 +102,17 @@ def get_all_listings():
         time.sleep(0.5)
 
     print(f"New descriptions fetched: {new_count}, skipped (already saved): {skipped_count}")
-    return all_listings
+    return all_listings, reached_end
 
 
-listings = get_all_listings()
+listings,reached_end = get_all_listings()
 init_db()
 init_market_values()
 seen_ids = save_listings(listings)
-mark_sold_listings(seen_ids)
+if reached_end and listings:
+    mark_sold_listings(seen_ids)
+else:
+    print("Did not reach the end of listings, not marking any as sold.")
 refresh_market_values()
 refresh_deal_scores()
 export_to_excel()

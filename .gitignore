@@ -2,3 +2,7 @@ node_modules/
 config.json
 .env
 cookie.txt
+*.db
+*.xlsx
+__pycache__/
+.venv/
