@@ -67,9 +67,10 @@ def get_all_listings():
     # max_pages = 1  #used for testing, comment out for full scrape
     reached_end = False
 
-    while True: #change True to page < maxpages for testing
+    while True: #change True to page <= maxpages for testing
         url = f"https://www.pakwheels.com/users/saved-ads?page={page}"
         resp = session.get(url, timeout=15)
+        
         
         soup = BeautifulSoup(resp.text, "html.parser")
 
