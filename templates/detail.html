@@ -21,11 +21,15 @@
   <h2>Description</h2>
   <p>{{ r["description"] or "No description saved." }}</p>
 
-  <h2>Pros</h2>
-  <p>{{ r["pros"] or "No analysis yet." }}</p>
+    <h2>Pros</h2>
+  {% set pros = r["pros"] | fromjson %}
+  {% if pros %}<ul>{% for p in pros %}<li>{{ p }}</li>{% endfor %}</ul>
+  {% else %}<p>No analysis yet.</p>{% endif %}
 
   <h2>Cons</h2>
-  <p>{{ r["cons"] or "No analysis yet." }}</p>
+  {% set cons = r["cons"] | fromjson %}
+  {% if cons %}<ul>{% for c in cons %}<li>{{ c }}</li>{% endfor %}</ul>
+  {% else %}<p>No analysis yet.</p>{% endif %}
     <h2>Price history</h2>
     {% if history %}
     <table border="1" cellpadding="4">

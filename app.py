@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, abort
 import sqlite3
 from math import ceil
+import json
 
 PER_PAGE = 50
 
@@ -17,6 +18,13 @@ def money(value):
         return f"{int(float(value)):,}"
     except (TypeError, ValueError):
         return ""
+
+@app.template_filter("fromjson")
+def fromjson(value):
+    try:
+        return json.loads(value) if value else []
+    except (TypeError, ValueError):
+        return []
 
 @app.route("/")
 def home():
