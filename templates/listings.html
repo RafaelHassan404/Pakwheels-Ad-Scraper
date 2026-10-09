@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head><title>PakWheels Listings</title></head>
+<body>
+  <h1>Listings</h1>
+
+  <form method="get">
+    <input name="q" placeholder="Brand or model" value="{{ q }}">
+    <input name="year_min" placeholder="Year from" size="8" value="{{ year_min }}">
+    <input name="year_max" placeholder="Year to" size="8" value="{{ year_max }}">
+    <input name="price_max" placeholder="Max price" size="10" value="{{ price_max }}">
+    <select name="status">
+      <option value="active" {% if status == 'active' %}selected{% endif %}>Active</option>
+      <option value="sold" {% if status == 'sold' %}selected{% endif %}>Sold</option>
+      <option value="all" {% if status == 'all' %}selected{% endif %}>All</option>
+    </select>
+    <button type="submit">Filter</button>
+    <a href="/">Reset</a>
+  </form>
+
+  <p>{{ total }} listings</p>
+
+  <table border="1" cellpadding="4">
+    <tr>
+      <th>Brand</th><th>Model</th><th>Year</th><th>Price</th>
+      <th>Mileage</th><th>Location</th><th>Deal score</th><th>Ad</th>
+    </tr>
+    {% for r in rows %}
+    <tr>
+      <td>{{ r["brand"] }}</td>
+      <td><a href="{{ url_for('listing', ad_id=r['ad_id']) }}">{{ r["model"] }}</a></td>      <td>{{ r["year"] }}</td>
+      <td>{{ r["current_price"] | money }}</td>
+      <td>{{ r["mileage"] }}</td>
+      <td>{{ r["location"] }}</td>
+      <td>{{ r["deal_score"] }}</td>
+      <td><a href="{{ r['link'] }}" target="_blank">View</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+
+  <p>
+    <div style="text-align:center; margin-top:12px;">
+    {% if page > 1 %}
+        <a href="{{ url_for('home', page=page-1, **args) }}">&larr; Prev</a>
+    {% endif %}
+
+    <form method="get" style="display:inline; margin:0 12px;">
+        {% for key, value in args.items() %}
+        <input type="hidden" name="{{ key }}" value="{{ value }}">
+        {% endfor %}
+        Page
+        <input type="number" name="page" value="{{ page }}" min="1" max="{{ pages }}" style="width:60px;">
+        of {{ pages }}
+        <button type="submit">Go</button>
+    </form>
+
+    {% if page < pages %}
+        <a href="{{ url_for('home', page=page+1, **args) }}">Next &rarr;</a>
+    {% endif %}
+    </div>
+  </p>
+</body>
+</html>

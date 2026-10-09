@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head><title>{{ r["brand"] }} {{ r["model"] }}</title></head>
+<body>
+  <p><a href="javascript:history.back()">&larr; Back to listings</a></p>
+
+  <h1>{{ r["brand"] }} {{ r["model"] }} {{ r["year"] }}</h1>
+
+  <p>
+    Price: {{ r["current_price"] | money }}<br>
+    Mileage: {{ r["mileage"] }}<br>
+    Engine: {{ r["engine_type"] }}<br>
+    Location: {{ r["location"] }}<br>
+    Status: {{ r["status"] }}<br>
+    Deal score: {{ r["deal_score"] }}<br>
+    First seen: {{ r["first_seen"] }}, last seen: {{ r["last_seen"] }}
+  </p>
+
+  <p><a href="{{ r['link'] }}" target="_blank">View original ad</a></p>
+
+  <h2>Description</h2>
+  <p>{{ r["description"] or "No description saved." }}</p>
+
+  <h2>Pros</h2>
+  <p>{{ r["pros"] or "No analysis yet." }}</p>
+
+  <h2>Cons</h2>
+  <p>{{ r["cons"] or "No analysis yet." }}</p>
+    <h2>Price history</h2>
+    {% if history %}
+    <table border="1" cellpadding="4">
+        <tr><th>Date</th><th>Price</th></tr>
+        {% for h in history %}
+        <tr>
+        <td>{{ h["recorded_date"] }}</td>
+        <td>{{ h["price"] | money }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No price history recorded.</p>
+    {% endif %}
+</body>
+</html>
