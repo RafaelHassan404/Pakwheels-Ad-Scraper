@@ -5,6 +5,12 @@ import json
 
 PER_PAGE = 50
 
+SORT_COLUMNS = {
+    "price": "current_price",
+    "year": "year",
+    "deal": "deal_score",
+}
+
 app = Flask(__name__)
 
 def get_conn():
@@ -35,6 +41,13 @@ def home():
     status = request.args.get("status", "active").strip()
     page = request.args.get("page", "1").strip()
     page = int(page) if page.isdigit() else 1
+
+    sort = request.args.get("sort", "deal")
+    if sort not in SORT_COLUMNS:
+        sort = "deal"
+    direction = request.args.get("dir", "desc")
+    if direction not in ("asc", "desc"):
+        direction = "desc"
 
     sql = """
         SELECT ad_id, brand, model, year, current_price, mileage,
@@ -67,14 +80,16 @@ def home():
     pages = max(1, ceil(total / PER_PAGE))
     page = max(1, min(page, pages))
 
-    sql += " ORDER BY deal_score DESC, ad_id LIMIT ? OFFSET ?"
+    col = SORT_COLUMNS[sort]
+    sql += f" ORDER BY {col} IS NULL, {col} {direction.upper()}, ad_id LIMIT ? OFFSET ?"
     params += [PER_PAGE, (page - 1) * PER_PAGE]
     rows = conn.execute(sql, params).fetchall()
     conn.close()
 
     # filters to carry over into the Prev/Next links
     args = {"q": q, "year_min": year_min, "year_max": year_max,
-            "price_max": price_max, "status": status}
+        "price_max": price_max, "status": status,
+        "sort": sort, "dir": direction}
 
     return render_template("listings.html", rows=rows, total=total,
                            page=page, pages=pages, args=args,

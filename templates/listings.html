@@ -3,8 +3,20 @@
 <head><title>PakWheels Listings</title></head>
 <body>
   <h1>Listings</h1>
+    {% macro sort_th(key, label, first_dir) %}
+    {% if args.sort == key %}
+      {% set next_dir = 'asc' if args.dir == 'desc' else 'desc' %}
+      {% set arrow = ' ▲' if args.dir == 'asc' else ' ▼' %}
+    {% else %}
+      {% set next_dir = first_dir %}
+      {% set arrow = ' ↕' %}
+    {% endif %}
+    <th><a href="{{ url_for('home', **dict(args, sort=key, dir=next_dir)) }}">{{ label }}{{ arrow }}</a></th>
+  {% endmacro %}
 
   <form method="get">
+    <input type="hidden" name="sort" value="{{ args.sort }}">
+    <input type="hidden" name="dir" value="{{ args.dir }}">
     <input name="q" placeholder="Brand or model" value="{{ q }}">
     <input name="year_min" placeholder="Year from" size="8" value="{{ year_min }}">
     <input name="year_max" placeholder="Year to" size="8" value="{{ year_max }}">
@@ -22,9 +34,13 @@
 
   <table border="1" cellpadding="4">
     <tr>
-      <th>Brand</th><th>Model</th><th>Year</th><th>Price</th>
-      <th>Mileage</th><th>Location</th><th>Deal score</th><th>Ad</th>
-    </tr>
+    <th>Brand</th><th>Model</th>
+    {{ sort_th('year', 'Year', 'desc') }}
+    {{ sort_th('price', 'Price', 'asc') }}
+    <th>Mileage</th><th>Location</th>
+    {{ sort_th('deal', 'Deal score', 'desc') }}
+    <th>Ad</th>
+  </tr>
     {% for r in rows %}
     <tr>
       <td>{{ r["brand"] }}</td>
