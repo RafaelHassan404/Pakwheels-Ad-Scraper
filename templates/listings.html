@@ -1,7 +1,11 @@
 <!doctype html>
 <html>
-<head><title>PakWheels Listings</title></head>
+<head>
+  <title>PakWheels Listings</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
 <body>
+  <main class="container">
   <h1>Listings</h1>
     {% macro sort_th(key, label, first_dir) %}
     {% if args.sort == key %}
@@ -32,19 +36,28 @@
 
   <p>{{ total }} listings</p>
 
-  <table border="1" cellpadding="4">
+  <table>
     <tr>
+    <th>Photo</th>
     <th>Brand</th><th>Model</th>
     {{ sort_th('year', 'Year', 'desc') }}
     {{ sort_th('price', 'Price', 'asc') }}
     <th>Mileage</th><th>Location</th>
     {{ sort_th('deal', 'Deal score', 'desc') }}
     <th>Ad</th>
-  </tr>
-    {% for r in rows %}
+  </tr> 
+        {% for r in rows %}
     <tr>
+      <td>
+        {% if r["image_url"] %}
+          <img src="{{ r['image_url'] }}" width="110" loading="lazy"
+               referrerpolicy="no-referrer"
+               alt="{{ r['brand'] }} {{ r['model'] }}">
+        {% endif %}
+      </td>
       <td>{{ r["brand"] }}</td>
-      <td><a href="{{ url_for('listing', ad_id=r['ad_id']) }}">{{ r["model"] }}</a></td>      <td>{{ r["year"] }}</td>
+      <td><a href="{{ url_for('listing', ad_id=r['ad_id']) }}">{{ r["model"] }}</a></td>
+      <td>{{ r["year"] }}</td>
       <td>{{ r["current_price"] | money }}</td>
       <td>{{ r["mileage"] }}</td>
       <td>{{ r["location"] }}</td>
@@ -75,5 +88,6 @@
     {% endif %}
     </div>
   </p>
+  </main>
 </body>
 </html>

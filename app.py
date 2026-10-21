@@ -51,7 +51,7 @@ def home():
 
     sql = """
         SELECT ad_id, brand, model, year, current_price, mileage,
-               location, deal_score, link
+               location, deal_score, link, image_url
         FROM listings
         WHERE 1=1
     """
