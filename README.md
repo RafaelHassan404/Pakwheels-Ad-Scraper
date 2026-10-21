@@ -47,6 +47,7 @@ python app.py         # web app at http://127.0.0.1:5000
 Run `Scraper.py` at least once before `app.py`, because the web app reads `pakwheels.db`, which the scraper creates.
 
 In `Scraper.py`, `max_pages` controls how many pages are scraped. Use `float("inf")` for a full run. Sold-listing detection only runs when the scraper reaches the end of your saved ads, so partial test runs never mark listings as sold.
+Alternatively, to launch the web app on Windows, double-click start.bat (or run python app.py and open http://127.0.0.1:5000).
 
 ## Project files
 
