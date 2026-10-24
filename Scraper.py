@@ -106,8 +106,8 @@ def get_all_listings():
     return all_listings, reached_end
 
 
-listings,reached_end = get_all_listings()
 init_db()
+listings,reached_end = get_all_listings()
 init_market_values()
 seen_ids = save_listings(listings)
 if reached_end and listings:
